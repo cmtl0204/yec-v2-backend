@@ -20,9 +20,18 @@ export const databaseProviders = [
         migrations: ['src/database/migrations/*.ts'],
         migrationsTableName: 'migrations',
         // dropSchema: true,
-        synchronize: true,
+        synchronize: false,
       });
-      return dataSource.initialize();
+      await dataSource.initialize();
+
+      await dataSource.query(`CREATE SCHEMA IF NOT EXISTS teacher_evaluation`);
+      await dataSource.query(`CREATE SCHEMA IF NOT EXISTS auth`);
+      await dataSource.query(`CREATE SCHEMA IF NOT EXISTS common`);
+      await dataSource.query(`CREATE SCHEMA IF NOT EXISTS core`);
+
+      await dataSource.synchronize();
+
+      return dataSource;
     },
   },
 ];
