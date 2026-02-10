@@ -1,6 +1,6 @@
 import {Global, Module} from '@nestjs/common';
 import {DatabaseModule} from '@database';
-import {GradesController} from './controllers';
+import {GradesController, MigrationController} from './controllers';
 import {GradesService} from './services/grades.service';
 import {TeachersController} from './controllers';
 import {TeachersService} from './services/teachers.service';
@@ -17,6 +17,7 @@ import {EnrollmentSubjectsService} from "./services/enrollment-subjects.service"
 import {EnrollmentSubjectsController} from "./controllers/enrollment-subjects.controller";
 import {CareerTeacherAssignmentsController} from "./controllers/career-teacher-assignments.controller";
 import {CareerTeacherAssignmentsService} from "./services/career-teacher-assignments.service";
+import {MigrationService} from "./services/migration.service";
 
 
 @Global()
@@ -29,7 +30,8 @@ import {CareerTeacherAssignmentsService} from "./services/career-teacher-assignm
         StudentsController,
         TeacherDistributionsController,
         EnrollmentSubjectsController,
-        CareerTeacherAssignmentsController
+        CareerTeacherAssignmentsController,
+        MigrationController
     ],
     providers: [
         GradesService,
@@ -41,6 +43,7 @@ import {CareerTeacherAssignmentsService} from "./services/career-teacher-assignm
         TeacherDistributionsService,
         EnrollmentSubjectsService,
         CareerTeacherAssignmentsService,
+        MigrationService,
     ],
     exports: [],
 })
