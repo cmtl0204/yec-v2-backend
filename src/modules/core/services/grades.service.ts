@@ -162,7 +162,8 @@ export class GradesService {
     let grade1 = grades.find(grade => grade.partialId === this.partial1.id);
     let grade2 = grades.find(grade => grade.partialId === this.partial2.id);
     // let grade3 = grades.find(grade => grade.partialId === this.partial3.id);
-
+console.log(grade1, grade2);
+console.log(this.partialEnabled1, this.partialEnabled2);
     if (grade1) {
       grade1.value = parseFloat(String(grade1.value));
 

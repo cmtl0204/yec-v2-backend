@@ -141,7 +141,6 @@ export class MigrationService {
 
     for (const item of dataExcel) {
       this.row++;
-      console.log(this.row);
 
       const schoolPeriod = schoolPeriods.find(schoolPeriod => schoolPeriod.code === item[ColumnsEnum.SCHOOL_PERIOD]);
       const career = careers.find(career => career.code === item[ColumnsEnum.CAREER_CODE]);
@@ -170,8 +169,6 @@ export class MigrationService {
           careerId: career.id,
         },
       });
-
-      console.log(this.row);
 
       if (enrollment) {
         let enrollmentDetail = await this.enrollmentDetailRepository.findOne({
@@ -223,7 +220,6 @@ export class MigrationService {
         enrollment.applicationsAt = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
         enrollment.folio = `${schoolPeriod.code}-${career.code}-${academicPeriod.code}`;
 
-        console.log(enrollment);
         const enrollmentCreated = await this.enrollmentRepository.save(enrollment);
 
         const enrollmentState = {
@@ -261,8 +257,6 @@ export class MigrationService {
 
         await this.saveAcademicState(item, enrollmentDetail);
       }
-
-      console.log(enrollment);
     }
 
     // await this.generateErrorReport(teacherDistribution.id);
@@ -359,8 +353,6 @@ export class MigrationService {
         where: { enrollmentDetailId: enrollmentDetail.id },
       });
 
-      console.log(grades);
-
       let grade1 = grades.find(grade => grade.partialId === this.partial1.id);
       let grade2 = grades.find(grade => grade.partialId === this.partial2.id);
       let grade3 = grades.find(grade => grade.partialId === this.partial3.id);
@@ -446,7 +438,7 @@ export class MigrationService {
   }
 
   async saveAcademicState(item: any, enrollmentDetail: EnrollmentDetailEntity) {
-    if (item[ColumnsEnum.FINAL_GRADE]) enrollmentDetail.finalGrade = item[ColumnsEnum.FINAL_GRADE];
+    enrollmentDetail.finalGrade = item[ColumnsEnum.FINAL_GRADE]??0;
 
     await this.enrollmentDetailRepository.update(enrollmentDetail.id, enrollmentDetail);
 
