@@ -27,7 +27,7 @@ enum ColumnsEnum {
   SCHOOL_PERIOD_CODE = 'Codigo_Periodo',
   ACADEMIC_PERIOD_CODE = 'Semestre',
   SUBJECT_CODE = 'Codigo_Asignatura',
-  WORKDAY_CODE = 'Codigo_Jornada',
+  WORKDAY_CODE = 'Horario',
 }
 
 interface ErrorModel {
