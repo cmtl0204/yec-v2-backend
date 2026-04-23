@@ -114,11 +114,14 @@ export class EnrollmentReportsService {
 
     // doc.image(qrImageBuffer, textX + 180, textY + 390, { width: 100 });
 
-    doc.font('Helvetica').fontSize(11).text('AB. ANA KARINA PERALTA VELASQUEZ', textX + 130, textY + 575);
+    doc
+      .font('Helvetica')
+      .fontSize(11)
+      .text('MSc. LORENA MALDONADO', textX + 130, textY + 575);
     doc
       .font('Helvetica-Bold')
       .fontSize(10)
-      .text('SECRETARIA GENERAL', textX + 175, textY + 595);
+      .text('COORDINADORA DEL CENTRO DE INGLÉS YAVIRAC', textX + 175, textY + 595);
     doc.moveDown();
     doc.text('INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC', textX + 5, textY + 615, { align: 'center' });
     //doc.font('Helvetica').fontSize(8).text('Revisado por: A. M.', textX + 355, textY + 630);
