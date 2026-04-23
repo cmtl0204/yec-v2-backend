@@ -22,6 +22,7 @@ const blobStream = require('blob-stream');
 export class EnrollmentReportsService {
   private imageHeaderPath = './resources/images/reports/header.png';
   private imageFooterPath = `./resources/images/reports/footer.png`;
+  private background = `./resources/images/reports/background_v.png`;
   private imageHeaderWidth = 110;
   private imageHeaderHeight = 80;
 
@@ -44,24 +45,34 @@ export class EnrollmentReportsService {
 
     doc.pipe(res);
     const textX = 50;
-    const textY = 80;
+    const textY = 120;
     const textW = 500;
 
+    // Tamaño de la página
+    const width = doc.page.width;
+    const height = doc.page.height;
+
+    // Dibujar como fondo
+    doc.image(this.background, 0, 0, {
+      width: width,
+      height: height,
+    });
+
     const enrollmentCode = `${enrollment.schoolPeriod.shortName}-${enrollment.career.acronym}-${enrollment.student.user.identification}`;
-    const text = `Por medio del presente, en mi calidad de Secretaria General del Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac, CERTIFICO que, de conformidad con el Sistema Integral Académico, el/la estudiante  ${enrollment.student.user.name} ${enrollment.student.user.lastname} con el número de identificación ${enrollment.student.user.identification}, se encuentra legalmente matriculado en esta Institución de Educación Superior, en la carrera de  ${enrollment.career.name}, periodo académico ${enrollment.schoolPeriod.name}, en las siguientes asignaturas:`;
+    const text = `Por medio del presente, en mi calidad de Coordinadora del Centro de Inglés Yavirac, CERTIFICO que, de conformidad con el Sistema Integral Académico, el/la estudiante  ${enrollment.student.user.name} ${enrollment.student.user.lastname} con el número de identificación ${enrollment.student.user.identification}, se encuentra legalmente matriculado/a, en el ciclo ${enrollment.schoolPeriod.name}, en el siguiente nivel:`;
     const currentDate = new Date();
     const day = format(currentDate, 'd', { locale: es }); // Formato numérico del día
     const formattedDate = format(currentDate, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
     const fechaCompleta = `${formattedDate.replace('dd', day)}`;
     //Inicio del Documento
-    doc.image(this.imageHeaderPath, 35, 20, {
-      align: 'center',
-      width: this.imageHeaderWidth,
-      height: this.imageHeaderHeight,
-    });
+    // doc.image(this.imageHeaderPath, 35, 20, {
+    //   align: 'center',
+    //   width: this.imageHeaderWidth,
+    //   height: this.imageHeaderHeight,
+    // });
 
 
-    doc.moveDown(2);
+    doc.moveDown(3);
     doc.font('Helvetica-Bold').fontSize(18).text('CERTIFICADO DE MATRÍCULA', textX + 110);
     doc.moveDown();
     doc.font('Helvetica');
@@ -117,29 +128,22 @@ export class EnrollmentReportsService {
     doc
       .font('Helvetica')
       .fontSize(11)
-      .text('MSc. LORENA MALDONADO', textX + 130, textY + 575);
+      .text('MSc. LORENA MALDONADO MORENO', textX + 135, textY + 575);
     doc
       .font('Helvetica-Bold')
       .fontSize(10)
-      .text('COORDINADORA DEL CENTRO DE INGLÉS YAVIRAC', textX + 175, textY + 595);
+      .text('COORDINADORA DEL CENTRO DE INGLÉS YAVIRAC', textX + 110, textY + 595);
     doc.moveDown();
-    doc.text('INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC', textX + 5, textY + 615, { align: 'center' });
-    //doc.font('Helvetica').fontSize(8).text('Revisado por: A. M.', textX + 355, textY + 630);
-    doc.moveDown();
-    doc.font('Helvetica').fontSize(8).text('Revisado por: A. M.', textX + 355);
+
     //Footer: Add page number
     const oldBottomMargin = doc.page.margins.bottom;
     doc.page.margins.bottom = 0; //Dumb: Have to remove bottom margin in order to write into it
 
     doc
       .fontSize('7')
-      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 20, {
+      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 40, {
         align: 'center',
       });
-
-    doc.text(`Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
-      align: 'center',
-    });
 
     doc.end();
   }
