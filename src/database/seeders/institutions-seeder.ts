@@ -21,24 +21,22 @@ export class InstitutionsSeeder {
       return state.code === 'enabled' && state.type === CatalogueTypeEnum.INSTITUTIONS_STATE;
     });
 
-    institutions.push(
-      {
-        state: stateEnable,
-        acronym: 'UAW',
-        cellphone: faker.phone.number(),
-        code: '1068',
-        codeSniese: '1068',
-        denomination: 'UNIVERSIDAD INTERCULTURAL',
-        email: 'instituto@edu.ec.com',
-        isVisible: true,
-        logo: 'img1',
-        name: 'UNIVERSIDAD INTERCULTURAL DE LAS NACIONALIDADES Y PUEBLOS INDIGENAS AMAWTAY WASI',
-        phone: '2245666',
-        shortName: 'AMAWTAY WASI',
-        slogan: '',
-        web: faker.internet.url(),
-      },
-    );
+    institutions.push({
+      state: stateEnable,
+      acronym: 'YAVIRAC',
+      cellphone: faker.phone.number(),
+      code: '1068',
+      codeSniese: '1068',
+      denomination: 'INSTITUTO SUPERIOR TECNOLÓGICO',
+      email: 'instituto@edu.ec.com',
+      isVisible: true,
+      logo: 'img1',
+      name: 'INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC',
+      phone: '2245666',
+      shortName: 'YAVIRAC',
+      slogan: '',
+      web: faker.internet.url(),
+    });
 
     for (const item of institutions) {
       await this.institutionsService.create(item);

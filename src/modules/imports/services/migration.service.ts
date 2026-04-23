@@ -146,7 +146,7 @@ export class MigrationService {
       const career = careers.find(career => career.code === item[ColumnsEnum.CAREER_CODE]);
       const parallel = parallels.find(parallel => parallel.code.toLowerCase() === item[ColumnsEnum.PARALLEL].toString().toLowerCase().trim());
       const enrollmentType = enrollmentTypes.find(enrollmentType => enrollmentType.code === 'ordinary');
-      const workday = workdays.find(workday => workday.code == item[ColumnsEnum.WORKDAY].toString().trim());
+      const workday = workdays.find(workday => workday.code == item[ColumnsEnum.WORKDAY]);
 
       const subject = subjects.find(subject => subject.code.toLowerCase() === item[ColumnsEnum.SUBJECT_CODE].toLowerCase().trim());
 

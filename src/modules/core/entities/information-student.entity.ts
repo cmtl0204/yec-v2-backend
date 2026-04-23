@@ -497,7 +497,7 @@ export class InformationStudentEntity {
         type: 'uuid',
         name: 'is_study_other_career_id',
         nullable: true,
-        comment: 'Estudia otra carrera fuera de la Amawtay Wasi'
+        comment: 'Estudia otra carrera fuera del Yavirac'
     })
     isStudyOtherCareerId: string;
 
@@ -630,7 +630,7 @@ export class InformationStudentEntity {
         type: 'uuid',
         name: 'type_study_other_career_id',
         nullable: true,
-        comment: 'Estudia otra carrera fuera de la Amawtay Wasi'
+        comment: 'Estudia otra carrera fuera del Yavirac'
     })
     typeStudyOtherCareerId: string;
 

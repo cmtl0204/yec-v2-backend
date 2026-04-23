@@ -48,7 +48,7 @@ export class EnrollmentReportsService {
     const textW = 500;
 
     const enrollmentCode = `${enrollment.schoolPeriod.shortName}-${enrollment.career.acronym}-${enrollment.student.user.identification}`;
-    const text = `Por medio del presente, en mi calidad de Secretaria General de la Universidad Intercultural de las Nacionalidades y Pueblos Indígenas Amawtay Wasi, CERTIFICO que, de conformidad con el Sistema Integral Académico, el/la estudiante  ${enrollment.student.user.name} ${enrollment.student.user.lastname} con el número de identificación ${enrollment.student.user.identification}, se encuentra legalmente matriculado en esta Institución de Educación Superior, en la carrera de  ${enrollment.career.name}, periodo académico ${enrollment.schoolPeriod.name}, en las siguientes asignaturas:`;
+    const text = `Por medio del presente, en mi calidad de Secretaria General del Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac, CERTIFICO que, de conformidad con el Sistema Integral Académico, el/la estudiante  ${enrollment.student.user.name} ${enrollment.student.user.lastname} con el número de identificación ${enrollment.student.user.identification}, se encuentra legalmente matriculado en esta Institución de Educación Superior, en la carrera de  ${enrollment.career.name}, periodo académico ${enrollment.schoolPeriod.name}, en las siguientes asignaturas:`;
     const currentDate = new Date();
     const day = format(currentDate, 'd', { locale: es }); // Formato numérico del día
     const formattedDate = format(currentDate, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
@@ -120,7 +120,7 @@ export class EnrollmentReportsService {
       .fontSize(10)
       .text('SECRETARIA GENERAL', textX + 175, textY + 595);
     doc.moveDown();
-    doc.text('UNIVERSIDAD INTERCULTURAL DE LAS NACIONALIDADES Y PUEBLOS INDÍGENAS AMAWTAY WASI', textX + 5, textY + 615, { align: 'center' });
+    doc.text('INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC', textX + 5, textY + 615, { align: 'center' });
     //doc.font('Helvetica').fontSize(8).text('Revisado por: A. M.', textX + 355, textY + 630);
     doc.moveDown();
     doc.font('Helvetica').fontSize(8).text('Revisado por: A. M.', textX + 355);
@@ -130,14 +130,11 @@ export class EnrollmentReportsService {
 
     doc
       .fontSize('7')
-      .text(
-        `Dir. Av. Colón E5-56 y Juan León Mera, Edif. Ave María, Torre B. TELF: 022232000 / 022230500 MAIL: informacion@uaw.edu.ec`,
-        50,
-        doc.page.height - oldBottomMargin / 2 - 20,
-        { align: 'center' },
-      );
+      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 20, {
+        align: 'center',
+      });
 
-    doc.text(`Universidad Intercultural de las Nacionalidades y Pueblos Indígenas Amawtay Wasi`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
+    doc.text(`Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
       align: 'center',
     });
 
@@ -219,14 +216,11 @@ export class EnrollmentReportsService {
 
     doc
       .fontSize('6')
-      .text(
-        `Dir. Av. Colón E5-56 y Juan León Mera, Edif. Ave María, Torre B. TELF: 022232000 / 022230500 MAIL: informacion@uaw.edu.ec`,
-        50,
-        doc.page.height - oldBottomMargin / 2 - 20,
-        { align: 'center' },
-      );
+      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 20, {
+        align: 'center',
+      });
 
-    doc.text(`Universidad Intercultural de las Nacionalidades y Pueblos Indígenas Amawtay Wasi`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
+    doc.text(`Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
       align: 'center',
     });
 
@@ -294,7 +288,7 @@ export class EnrollmentReportsService {
     doc.moveDown('2');
 
     doc.pipe(res);
-    const title = `UNIVERSIDAD INTERCULTURAL DE LAS NACIONALIDADES Y PUEBLOS INDÍGENAS AMAWTAY WASI`;
+    const title = `INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`;
     const career = `${careers.name}`;
     doc
       .fontSize('12')
@@ -431,15 +425,7 @@ export class EnrollmentReportsService {
 
     const yPositionSections = doc.page.height - oldBottomMargin / 2 - 100;
 
-    doc
-      .font('Times-Bold')
-      .fontSize('12')
-      .text(
-        'DIRECCIÓN DE CARRERA',
-        50,
-        yPositionSections,
-        { width: sectionWidth, align: 'center' },
-      );
+    doc.font('Times-Bold').fontSize('12').text('DIRECCIÓN DE CARRERA', 50, yPositionSections, { width: sectionWidth, align: 'center' });
 
     doc
       .font('Times-Bold')
@@ -455,7 +441,7 @@ export class EnrollmentReportsService {
       .font('Times-Bold')
       .fontSize('12')
       .text(
-        `UNIVERSIDAD INTERCULTURAL DE LAS NACIONALIDADES Y PUEBLOS INDÍGENAS AMAWTAY WASI`,
+        `INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`,
         doc.page.width / 4 - 70,
         yPositionSections + sectionHeight + 10,
         { align: 'center' },
@@ -464,7 +450,7 @@ export class EnrollmentReportsService {
     doc
       .fontSize('7')
       .text(
-        `Dir. Av. Colón E5-56 y Juan León Mera, Edif. Ave María, Torre B. TELF: 022232000 / 022230500 MAIL: informacion@uaw.edu.ec Universidad Intercultural de las Nacionalidades y Pueblos Indígenas Amawtay Wasi`,
+        `Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`,
         80,
         doc.page.height - oldBottomMargin / 2 - 40,
         { align: 'center' },

@@ -506,15 +506,16 @@ export class StudentReportsService {
                 const oldBottomMargin = doc.page.margins.bottom;
                 doc.page.margins.bottom = 0; //Dumb: Have to remove bottom margin in order to write into it
 
-                doc.fontSize('6').text(`Dir. Av. Colón E5-56 y Juan León Mera, Edif. Ave María, Torre B. TELF: 022232000 / 022230500 MAIL: informacion@uaw.edu.ec`,
+                doc
+                  .fontSize('6')
+                  .text(
+                    `Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`,
                     50,
-                    doc.page.height - (oldBottomMargin / 2) - 20,
-                    {align: 'center'});
+                    doc.page.height - oldBottomMargin / 2 - 20,
+                    { align: 'center' },
+                  );
 
-                doc.text(`Universidad Intercultural de las Nacionalidades y Pueblos Indígenas Amawtay Wasi`,
-                    20,
-                    doc.page.height - (oldBottomMargin / 2) - 10,
-                    {align: 'center'});
+                doc.text(`Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`, 20, doc.page.height - oldBottomMargin / 2 - 10, { align: 'center' });
 
                 doc
                     .text(

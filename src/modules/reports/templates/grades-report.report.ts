@@ -47,7 +47,7 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
           marginLeft: 30,
         },
         {
-          text: 'UNIVERSIDAD INTERCULTURAL DE LAS NACIONALIDADES Y PUEBLOS INDÍGENAS AMAWTAY WASI',
+          text: 'INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC',
           alignment: 'center',
           color: 'gray',
           marginTop: 20,
@@ -55,7 +55,7 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
       ],
     },
 
-    footer: function(currentPage, pageCount) {
+    footer: function (currentPage, pageCount) {
       return {
         text: `Página ${currentPage} de ${pageCount}`,
         alignment: 'right',
@@ -96,22 +96,10 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
                 text: `${subject.code} - ${subject.name}`,
               },
             ],
-            [
-              { text: 'CICLO:', bold: true },
-              { text: `${academicPeriod} - ${parallel}` },
-            ],
-            [
-              { text: 'NUMERO DE ALUMNOS:', bold: true },
-              { text: studentsTotal },
-            ],
-            [
-              { text: 'PROFESOR:', bold: true },
-              { text: `${teacherIdentification} - ${teacherName}` },
-            ],
-            [
-              { text: 'PERIODO ACADÉMICO:', bold: true },
-              { text: schoolPeriod },
-            ],
+            [{ text: 'CICLO:', bold: true }, { text: `${academicPeriod} - ${parallel}` }],
+            [{ text: 'NUMERO DE ALUMNOS:', bold: true }, { text: studentsTotal }],
+            [{ text: 'PROFESOR:', bold: true }, { text: `${teacherIdentification} - ${teacherName}` }],
+            [{ text: 'PERIODO ACADÉMICO:', bold: true }, { text: schoolPeriod }],
           ],
         },
 
@@ -128,7 +116,7 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
 
           body: [
             [
-              { text: 'IDENTIFICACIÓN', bold: true, alignment: 'center', fillColor: '#dddddd'},
+              { text: 'IDENTIFICACIÓN', bold: true, alignment: 'center', fillColor: '#dddddd' },
               { text: 'APELLIDOS', bold: true, alignment: 'center', fillColor: '#dddddd' },
               { text: 'NOMBRES', bold: true, alignment: 'center', fillColor: '#dddddd' },
               { text: 'PROGRESO', bold: true, alignment: 'center', fillColor: '#dddddd' },
@@ -163,10 +151,12 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
           widths: ['auto'], // Ancho de la tabla
           body: [
             [{ text: `${teacherName}`, alignment: 'center' }],
-            [{
-              text: 'PROFESOR DE LA ASIGNATURA',
-              alignment: 'center',
-            }],
+            [
+              {
+                text: 'PROFESOR DE LA ASIGNATURA',
+                alignment: 'center',
+              },
+            ],
           ],
         },
 
@@ -175,14 +165,13 @@ export const gradesReportReport = (data: any): TDocumentDefinitions => {
         marginLeft: 390 - (teacherName.length > 25 ? teacherName.length * 4 : 100),
 
         layout: {
-          hLineWidth: (i: number, node: any) =>
-            (i === 0 ? 1 : 0), // Borde solo arriba y abajo
+          hLineWidth: (i: number, node: any) => (i === 0 ? 1 : 0), // Borde solo arriba y abajo
           // hLineWidth: (i: number, node: any) => (i === 0 || i === node.table.body.length ? 1 : 0), // Borde solo arriba y abajo
 
-          vLineWidth: function(i, node) {
+          vLineWidth: function (i, node) {
             return 0; // Ocultar líneas verticales
           },
-          hLineColor: function(i, node) {
+          hLineColor: function (i, node) {
             return '#000000'; // Color de la línea horizontal
           },
         },

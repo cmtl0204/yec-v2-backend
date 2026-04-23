@@ -162,8 +162,7 @@ export class GradesService {
     let grade1 = grades.find(grade => grade.partialId === this.partial1.id);
     let grade2 = grades.find(grade => grade.partialId === this.partial2.id);
     // let grade3 = grades.find(grade => grade.partialId === this.partial3.id);
-console.log(grade1, grade2);
-console.log(this.partialEnabled1, this.partialEnabled2);
+
     if (grade1) {
       grade1.value = parseFloat(String(grade1.value));
 
@@ -291,7 +290,7 @@ console.log(this.partialEnabled1, this.partialEnabled2);
       // grade3.value = parseFloat(String(grade3.value));
 
       // let finalGradeTotal = (grade1.value + grade2.value + grade3.value) / 3;
-      let finalGradeTotal = (grade1.value + grade2.value) / 2;
+      let finalGradeTotal = grade1.value + grade2.value;
 
       if (finalGradeTotal >= 7 || finalGradeTotal < 4) {
         supplementaryGrade = null;
@@ -314,20 +313,20 @@ console.log(this.partialEnabled1, this.partialEnabled2);
 
       if (finalAttendance || finalAttendance == 0) {
         if (finalGrade >= 7) {
-          if (finalAttendance >= 70) {
+          if (finalAttendance >= 75) {
             enrollmentDetail.academicStateId = this.approved.id;
             enrollmentDetail.academicObservation = null;
           } else {
             enrollmentDetail.academicStateId = this.failed.id;
-            enrollmentDetail.academicObservation = 'Pierde por Progreso';
+            enrollmentDetail.academicObservation = 'Pierde por Asistencia';
           }
         } else {
           enrollmentDetail.academicStateId = this.failed.id;
 
-          if (finalAttendance >= 70) {
+          if (finalAttendance >= 75) {
             enrollmentDetail.academicObservation = 'Pierde por Calificación';
           } else {
-            enrollmentDetail.academicObservation = 'Pierde por Calificación y Progreso';
+            enrollmentDetail.academicObservation = 'Pierde por Calificación y Asistencia';
           }
         }
 

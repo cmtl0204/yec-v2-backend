@@ -473,7 +473,7 @@ export class EnrollmentsService {
             enrollmentDetail.academicObservation = null;
           } else {
             enrollmentDetail.academicStateId = this.failed.id;
-            enrollmentDetail.academicObservation = 'Pierde por Progreso';
+            enrollmentDetail.academicObservation = 'Pierde por Asistencia';
           }
         } else {
           enrollmentDetail.academicStateId = this.failed.id;
@@ -481,7 +481,7 @@ export class EnrollmentsService {
           if (finalAttendance >= 70) {
             enrollmentDetail.academicObservation = 'Pierde por Calificación';
           } else {
-            enrollmentDetail.academicObservation = 'Pierde por Calificación y Progreso';
+            enrollmentDetail.academicObservation = 'Pierde por Calificación y Asistencia';
           }
         }
 
