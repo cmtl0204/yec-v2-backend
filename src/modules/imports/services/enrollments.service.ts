@@ -195,8 +195,7 @@ export class EnrollmentsService {
         enrollmentDetail.typeId = enrollmentType.id;
         enrollmentDetail.workdayId = workday.id;
         enrollmentDetail.number = item[ColumnsEnum.ENROLLMENT_NUMBER];
-        // enrollmentDetail.date = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
-        enrollmentDetail.date = new Date();
+        enrollmentDetail.date = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
 
         enrollmentDetail = await this.enrollmentDetailRepository.save(enrollmentDetail);
 
@@ -204,8 +203,7 @@ export class EnrollmentsService {
           enrollmentDetailId: enrollmentDetail.id,
           stateId: enrollmentStateEnrolled.id,
           userId: student.userId,
-          // date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
-          date: new Date(),
+          date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
         };
 
         await this.enrollmentDetailStateRepository.save(enrollmentDetailState);
@@ -225,10 +223,8 @@ export class EnrollmentsService {
         enrollment.typeId = enrollmentType.id;
         enrollment.workdayId = workday.id;
         enrollment.code = `${schoolPeriod.codeSniese}-${career.code}-${identification}`;
-        // enrollment.date = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
-        // enrollment.applicationsAt = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
-        enrollment.date = new Date();
-        enrollment.applicationsAt = new Date();
+        enrollment.date = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
+        enrollment.applicationsAt = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
         enrollment.folio = `${schoolPeriod.codeSniese}-${career.code}-${academicPeriod.code}`;
 
         const enrollmentCreated = await this.enrollmentRepository.save(enrollment);
@@ -237,8 +233,7 @@ export class EnrollmentsService {
           enrollmentId: enrollmentCreated.id,
           stateId: enrollmentStateEnrolled.id,
           userId: student.userId,
-          // date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
-          date: new Date(),
+          date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
         };
 
         await this.enrollmentStateRepository.save(enrollmentState);
@@ -258,8 +253,7 @@ export class EnrollmentsService {
           enrollmentDetailId: enrollmentDetail.id,
           stateId: enrollmentStateEnrolled.id,
           userId: student.userId,
-          // date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
-          date: new Date(),
+          date: new Date(item[ColumnsEnum.ENROLLMENT_DATE]),
         };
 
         await this.enrollmentDetailStateRepository.save(enrollmentDetailState);
@@ -534,5 +528,85 @@ export class EnrollmentsService {
     await this.informationStudentRepository.save(newInformationStudent);
 
     return studentCreated;
+  }
+
+  async importEnrollmentsValidate(file: Express.Multer.File, payload: any) {
+    this.gradeErrors = [];
+    this.attendanceErrors = [];
+    this.partialPermissionErrors = [];
+    this.row = 1;
+
+    const path = join(process.cwd(), 'storage/imports', file.filename);
+
+    const workbook = XLSX.readFile(path);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+    const teacherDistribution = await this.teacherDistributionRepository.findOneBy({ id: payload.teacherDistributionId });
+    const schoolPeriods = await this.schoolPeriodRepository.find();
+    const careers = await this.careerRepository.find();
+    const subjects = await this.subjectRepository.find({ relations: { academicPeriod: true } });
+
+    await this.loadUsers();
+    await this.loadAcademicStates();
+    await this.loadPartials();
+    await this.loadRoles();
+
+    const catalogues = await this.cataloguesService.findCache();
+    const enrollmentStateEnrolled = catalogues.find(
+      catalogue => catalogue.code === CatalogueEnrollmentStateEnum.ENROLLED && catalogue.type === CatalogueTypeEnum.ENROLLMENT_STATE,
+    );
+
+    const parallels = catalogues.filter(catalogue => catalogue.type === CatalogueTypeEnum.PARALLEL);
+    const enrollmentTypes = catalogues.filter(catalogue => catalogue.type === CatalogueTypeEnum.ENROLLMENTS_TYPE);
+    const workdays = catalogues.filter(catalogue => catalogue.type === CatalogueTypeEnum.ENROLLMENTS_WORKDAY);
+
+    for (const item of dataExcel) {
+      this.row++;
+
+      const schoolPeriod = schoolPeriods.find(schoolPeriod => schoolPeriod.codeSniese === item[ColumnsEnum.SCHOOL_PERIOD]);
+      const career = careers.find(career => career.code === item[ColumnsEnum.CAREER_CODE]);
+      const parallel = parallels.find(parallel => parallel.code === item[ColumnsEnum.PARALLEL].toLowerCase());
+      const enrollmentType = enrollmentTypes.find(enrollmentType => enrollmentType.code === 'ordinary');
+      const workday = workdays.find(workday => workday.code == item[ColumnsEnum.WORKDAY]);
+
+      const subject = subjects.find(subject => subject.code.toLowerCase() === item[ColumnsEnum.SUBJECT_CODE].toLowerCase().trim());
+      const academicPeriod = subject.academicPeriod;
+
+      let identification = item[ColumnsEnum.IDENTIFICATION];
+
+      if (!identification || identification.length === 0) continue;
+
+      if (identification) identification = identification.toString().trim();
+
+      if (identification.length === 9) identification = '0' + identification;
+
+      const student = await this.findStudent(item);
+
+      let enrollment = await this.enrollmentRepository.findOne({
+        where: {
+          studentId: student.id,
+          schoolPeriodId: schoolPeriod.id,
+          careerId: career.id,
+        },
+      });
+
+      if (enrollment) {
+        console.log(this.row);
+        console.log(item[ColumnsEnum.IDENTIFICATION]);
+        console.log(item[ColumnsEnum.SCHOOL_PERIOD]);
+        console.log(item[ColumnsEnum.SUBJECT_CODE]);
+        console.log(item[ColumnsEnum.WORKDAY]);
+        console.log(item[ColumnsEnum.PARALLEL]);
+        console.log('-----------------------------------------------------------------------------------------');
+      }
+    }
+
+    await this.generateErrorReport(teacherDistribution.id);
+
+    fs.unlinkSync(join(process.cwd(), 'storage/imports', file.filename));
+
+    if (this.gradeErrors.concat(this.attendanceErrors, this.partialPermissionErrors).length > 0) throw new BadRequestException();
   }
 }

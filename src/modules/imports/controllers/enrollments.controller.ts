@@ -11,8 +11,7 @@ import { EnrollmentsService } from '../services/enrollments.service';
 @ApiTags('Imports Enrollments')
 @Controller('imports/enrollments')
 export class EnrollmentsController {
-  constructor(private readonly enrollmentsService: EnrollmentsService) {
-  }
+  constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
   @ApiOperation({ summary: 'Import Enrollments' })
   // @Roles(RoleEnum.ADMIN)
@@ -27,9 +26,7 @@ export class EnrollmentsController {
       fileFilter: excelFileFilter,
     }),
   )
-  async importEnrollments(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() payload: any): Promise<ResponseHttpModel> {
+  async importEnrollments(@UploadedFile() file: Express.Multer.File, @Body() payload: any): Promise<ResponseHttpModel> {
     await this.enrollmentsService.importEnrollments(file, payload);
 
     return {
@@ -38,4 +35,29 @@ export class EnrollmentsController {
       title: `Importado`,
     };
   }
+
+  @ApiOperation({ summary: 'Import Enrollments' })
+  // @Roles(RoleEnum.ADMIN)
+  @Post('validate')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: join(process.cwd(), 'storage/imports'),
+        filename: getFileName,
+      }),
+      fileFilter: excelFileFilter,
+    }),
+  )
+  async importEnrollmentsValidate(@UploadedFile() file: Express.Multer.File, @Body() payload: any): Promise<ResponseHttpModel> {
+    await this.enrollmentsService.importEnrollmentsValidate(file, payload);
+
+    return {
+      data: null,
+      message: `Matriculas Importadas Correctamente`,
+      title: `Importado`,
+    };
+  }
 }
+
+

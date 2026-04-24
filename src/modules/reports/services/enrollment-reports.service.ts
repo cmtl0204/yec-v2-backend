@@ -97,19 +97,21 @@ export class EnrollmentReportsService {
     const rows = [];
 
     enrollment.enrollmentDetails.forEach(enrollmentDetail => {
+      console.log(enrollmentDetail);
       const list = [
         enrollmentDetail.subject.code,
         enrollmentDetail.subject.name,
         enrollmentDetail.subject.academicPeriod.name,
         enrollmentDetail.number,
         enrollmentDetail.parallel.name,
+        enrollmentDetail.workday.name,
         enrollmentDetail.enrollmentDetailStates[0].state.name,
       ];
       rows.push(list);
     });
 
     const table = {
-      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo', 'Estado'],
+      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo','Horario', 'Estado'],
       rows: rows,
     };
 
@@ -162,10 +164,20 @@ export class EnrollmentReportsService {
     const textY = 80;
     const textW = 500;
 
+    // Tamaño de la página
+    const width = doc.page.width;
+    const height = doc.page.height;
+
+    // Dibujar como fondo
+    doc.image(this.background, 0, 0, {
+      width: width,
+      height: height,
+    });
+
     const text = `Nombre: ${enrollment.student.user.name} ${enrollment.student.user.lastname}; Cedula: ${enrollment.student.user.identification}; Carrera: ${enrollment.career.name}; Ciclo: ${enrollment.schoolPeriod.name}.`;
     const currentDate = new Date();
     const day = format(currentDate, 'd', { locale: es }); // Formato numérico del día
-    const formattedDate = format(currentDate, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+    const formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const fechaCompleta = `${formattedDate.replace('dd', day)}`;
     //Inicio del Documento
     doc.image(this.imageHeaderPath, 35, 20, {
@@ -179,7 +191,10 @@ export class EnrollmentReportsService {
     doc.fontSize(11);
     doc.text(`Quito, ${fechaCompleta}`, textX + 320);
     doc.moveDown(2);
-    doc.font('Helvetica-Bold').fontSize(18).text('REPORTE DE MATRÍCULA', textX + 100);
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(18)
+      .text('REPORTE DE MATRÍCULA', textX + 100);
     doc.moveDown();
 
     doc.font('Times-Roman');
@@ -200,13 +215,14 @@ export class EnrollmentReportsService {
         enrollmentDetail.subject.academicPeriod.name,
         enrollmentDetail.number,
         enrollmentDetail.parallel.name,
+        enrollmentDetail.workday.name,
         enrollmentDetail.enrollmentDetailStates[0].state.name,
       ];
       rows.push(list);
     });
 
     const table = {
-      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo', 'Estado'],
+      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo','Horario', 'Estado'],
       rows: rows,
     };
 
@@ -215,7 +231,7 @@ export class EnrollmentReportsService {
     doc.moveDown();
     doc.font('Times-Roman');
     doc.fontSize(11);
-    doc.text(`NOTA: ESTE DOCUMENTO ES ÚNICAMENTE INFORMATIVO, NO TIENE NINGUNA VALIDEZ LEGAL`, textX, textY + 560)
+    doc.text(`NOTA: ESTE DOCUMENTO ES ÚNICAMENTE INFORMATIVO, NO TIENE NINGUNA VALIDEZ LEGAL`, textX, textY + 560);
 
     //Footer: Add page number
     const oldBottomMargin = doc.page.margins.bottom;
@@ -226,10 +242,6 @@ export class EnrollmentReportsService {
       .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 20, {
         align: 'center',
       });
-
-    doc.text(`Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`, 20, doc.page.height - oldBottomMargin / 2 - 10, {
-      align: 'center',
-    });
 
     doc.end();
   }

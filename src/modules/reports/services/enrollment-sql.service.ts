@@ -101,23 +101,24 @@ export class EnrollmentSqlService {
 
     async findEnrollmentCertificateByEnrollment(id: string): Promise<EnrollmentEntity> {
         const enrollment = await this.repository.findOne({
-            relations: {
-                academicPeriod: true,
-                career: {institution: true},
-                parallel: true,
-                workday: true,
-                schoolPeriod: true,
-                enrollmentDetails: {
-                    parallel: true,
-                    subject: {academicPeriod: true},
-                    enrollmentDetailStates: {state: true},
-                },
-                enrollmentStates: {
-                    state: true,
-                },
-                student: {user: true},
+          relations: {
+            academicPeriod: true,
+            career: { institution: true },
+            parallel: true,
+            workday: true,
+            schoolPeriod: true,
+            enrollmentDetails: {
+              parallel: true,
+              workday: true,
+              subject: { academicPeriod: true },
+              enrollmentDetailStates: { state: true },
             },
-            where: {id},
+            enrollmentStates: {
+              state: true,
+            },
+            student: { user: true },
+          },
+          where: { id },
         });
 
         return enrollment;
