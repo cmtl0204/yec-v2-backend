@@ -42,14 +42,6 @@ export class CareerParallelEntity {
     deletedAt: Date;
 
     @Column({
-        name: 'is_visible',
-        type: 'boolean',
-        default: true,
-        comment: 'true=visible, false=no visible',
-    })
-    isVisible: boolean;
-
-    @Column({
         name: 'is_enabled',
         type: 'boolean',
         default: true,

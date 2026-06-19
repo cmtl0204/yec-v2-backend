@@ -226,6 +226,8 @@ export class EnrollmentsService {
         enrollment.date = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
         enrollment.applicationsAt = new Date(item[ColumnsEnum.ENROLLMENT_DATE]);
         enrollment.folio = `${schoolPeriod.codeSniese}-${career.code}-${academicPeriod.code}`;
+        console.log(enrollment);
+        console.log(item[ColumnsEnum.ENROLLMENT_DATE]);
 
         const enrollmentCreated = await this.enrollmentRepository.save(enrollment);
 

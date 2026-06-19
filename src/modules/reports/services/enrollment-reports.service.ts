@@ -3,11 +3,7 @@ import { CareersService, SubjectsService } from '@core/services';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import {
-  CareerEntity, CatalogueEntity,
-  EnrollmentEntity, EnrollmentStateEntity,
-  StudentEntity,
-} from '@core/entities';
+import { CareerEntity, CatalogueEntity, EnrollmentEntity, EnrollmentStateEntity, StudentEntity } from '@core/entities';
 import { UserEntity } from '@auth/entities';
 import * as XLSX from 'xlsx';
 import * as qr from 'qrcode';
@@ -31,8 +27,8 @@ export class EnrollmentReportsService {
     private readonly careersService: CareersService,
     private readonly subjectsService: SubjectsService,
     @Inject(CoreRepositoryEnum.STUDENT_REPOSITORY) private readonly studentRepository: Repository<StudentEntity>,
-    @Inject(CoreRepositoryEnum.ENROLLMENT_REPOSITORY) private readonly enrollmentRepository: Repository<EnrollmentEntity>) {
-  }
+    @Inject(CoreRepositoryEnum.ENROLLMENT_REPOSITORY) private readonly enrollmentRepository: Repository<EnrollmentEntity>,
+  ) {}
 
   async generateEnrollmentCertificate(@Res() res: Response, id: string) {
     const enrollment = await this.enrollmentSqlService.findEnrollmentCertificateByEnrollment(id);
@@ -62,7 +58,7 @@ export class EnrollmentReportsService {
     const text = `Por medio del presente, en mi calidad de Coordinadora del Centro de Inglés Yavirac, CERTIFICO que, de conformidad con el Sistema Integral Académico, el/la estudiante  ${enrollment.student.user.name} ${enrollment.student.user.lastname} con el número de identificación ${enrollment.student.user.identification}, se encuentra legalmente matriculado/a, en el ciclo ${enrollment.schoolPeriod.name}, en el siguiente nivel:`;
     const currentDate = new Date();
     const day = format(currentDate, 'd', { locale: es }); // Formato numérico del día
-    const formattedDate = format(currentDate, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+    const formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const fechaCompleta = `${formattedDate.replace('dd', day)}`;
     //Inicio del Documento
     // doc.image(this.imageHeaderPath, 35, 20, {
@@ -71,9 +67,11 @@ export class EnrollmentReportsService {
     //   height: this.imageHeaderHeight,
     // });
 
-
     doc.moveDown(3);
-    doc.font('Helvetica-Bold').fontSize(18).text('CERTIFICADO DE MATRÍCULA', textX + 110);
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(18)
+      .text('CERTIFICADO DE MATRÍCULA', textX + 110);
     doc.moveDown();
     doc.font('Helvetica');
     doc.fontSize(11);
@@ -82,8 +80,6 @@ export class EnrollmentReportsService {
     doc.font('Helvetica-Bold');
     doc.fontSize(11);
     doc.text('MATRICULA:  ' + enrollmentCode, textX);
-
-
 
     doc.font('Helvetica');
     doc.fontSize(11);
@@ -97,7 +93,6 @@ export class EnrollmentReportsService {
     const rows = [];
 
     enrollment.enrollmentDetails.forEach(enrollmentDetail => {
-      console.log(enrollmentDetail);
       const list = [
         enrollmentDetail.subject.code,
         enrollmentDetail.subject.name,
@@ -111,11 +106,11 @@ export class EnrollmentReportsService {
     });
 
     const table = {
-      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo','Horario', 'Estado'],
+      headers: ['Código', 'Asignatura', 'Nivel', 'Num. Matr', 'Paralelo', 'Horario', 'Estado'],
       rows: rows,
     };
 
-    await doc.table(table, { align: 'center', columnsSize: [50, 240, 50, 30, 40, 50] });
+    await doc.table(table, { align: 'center', columnsSize: [60, 150, 60, 60, 40, 80, 50] });
 
     const qrData = `http://localhost:3000/api/v1/enrollment-reports/${enrollment.studentId}/certificate`;
     const qrImageBuffer = await qr.toBuffer(qrData, {
@@ -180,11 +175,7 @@ export class EnrollmentReportsService {
     const formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const fechaCompleta = `${formattedDate.replace('dd', day)}`;
     //Inicio del Documento
-    doc.image(this.imageHeaderPath, 35, 20, {
-      align: 'center',
-      width: this.imageHeaderWidth,
-      height: this.imageHeaderHeight,
-    });
+
 
     doc.moveDown();
     doc.font('Times-Roman');
@@ -222,11 +213,11 @@ export class EnrollmentReportsService {
     });
 
     const table = {
-      headers: ['Código', 'Asignatura', 'Nivel', 'Num.', 'Paralelo','Horario', 'Estado'],
+      headers: ['Código', 'Asignatura', 'Nivel', 'Num. Matr.', 'Paralelo', 'Horario', 'Estado'],
       rows: rows,
     };
 
-    await doc.table(table, { align: 'center', columnsSize: [60, 220, 60, 30, 40, 50] });
+    await doc.table(table, { align: 'center', columnsSize: [60, 150, 60, 60, 40, 80, 50] });
 
     doc.moveDown();
     doc.font('Times-Roman');
@@ -239,7 +230,7 @@ export class EnrollmentReportsService {
 
     doc
       .fontSize('6')
-      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 20, {
+      .text(`Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec`, 50, doc.page.height - oldBottomMargin / 2 - 25, {
         align: 'center',
       });
 
@@ -286,11 +277,9 @@ export class EnrollmentReportsService {
     const enrollments = await this.enrollmentSqlService.findAcademicRecordByStudent(studentId, careerId);
     const careers = await this.careersService.findOne(careerId);
     const student = await this.studentRepository.findOne({
-        where: { id: studentId },
-        relations: { user: true },
-      },
-    );
-
+      where: { id: studentId },
+      relations: { user: true },
+    });
 
     const doc = new PDFDocument({
       size: 'A4',
@@ -309,49 +298,40 @@ export class EnrollmentReportsService {
     doc.pipe(res);
     const title = `INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`;
     const career = `${careers.name}`;
-    doc
-      .fontSize('12')
-      .font('Helvetica-Bold')
-      .text(title, {
-        align: 'center',
-      });
+    doc.fontSize('12').font('Helvetica-Bold').text(title, {
+      align: 'center',
+    });
+
+    doc.moveDown();
+
+    doc.font('Times-Roman').fontSize('9').text(career, {
+      align: 'center',
+    });
+
+    doc.moveDown();
+
+    doc.font('Times-Roman').fontSize('8').text(careers.codeSniese, {
+      align: 'center',
+    });
 
     doc.moveDown();
 
     doc
       .font('Times-Roman')
       .fontSize('9')
-      .text(career, {
-        align: 'center',
-      });
+      .text(
+        `PROGRAMA DE RECONOCIMIENTO DE TRAYECTORIAS DE LOS CONOCIMIENTOS Y EXPERIENCIAS DE LAS SABIAS Y SABIOS 
+    `,
+        {
+          align: 'center',
+        },
+      );
 
     doc.moveDown();
 
-    doc
-      .font('Times-Roman')
-      .fontSize('8')
-      .text(careers.codeSniese, {
-        align: 'center',
-      });
-
-    doc.moveDown();
-
-    doc
-      .font('Times-Roman')
-      .fontSize('9')
-      .text(`PROGRAMA DE RECONOCIMIENTO DE TRAYECTORIAS DE LOS CONOCIMIENTOS Y EXPERIENCIAS DE LAS SABIAS Y SABIOS 
-    `, {
-        align: 'center',
-      });
-
-    doc.moveDown();
-
-    doc
-      .font('Helvetica-Bold')
-      .fontSize('20')
-      .text(`RÉCORD ACADÉMICO`, {
-        align: 'center',
-      });
+    doc.font('Helvetica-Bold').fontSize('20').text(`RÉCORD ACADÉMICO`, {
+      align: 'center',
+    });
 
     doc.moveDown();
 
@@ -374,7 +354,7 @@ export class EnrollmentReportsService {
       .text(student.user.identification);
 
     const currentDate = new Date();
-    const formattedDate = format(currentDate, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+    const formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     doc
       .font('Times-Bold')
       .fontSize('10')
@@ -388,11 +368,7 @@ export class EnrollmentReportsService {
 
     enrollments.forEach(enrollment => {
       enrollment.enrollmentDetails.forEach(enrollmentDetail => {
-
-
-        const list = [
-          enrollmentDetail.finalGrade,
-        ];
+        const list = [enrollmentDetail.finalGrade];
         finalGrade.push(list);
       });
     });
@@ -412,8 +388,6 @@ export class EnrollmentReportsService {
 
     enrollments.forEach(enrollment => {
       enrollment.enrollmentDetails.forEach(enrollmentDetail => {
-
-
         const list = [
           enrollment.schoolPeriod.shortName,
           enrollmentDetail.subject.code,
@@ -459,12 +433,9 @@ export class EnrollmentReportsService {
     doc
       .font('Times-Bold')
       .fontSize('12')
-      .text(
-        `INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`,
-        doc.page.width / 4 - 70,
-        yPositionSections + sectionHeight + 10,
-        { align: 'center' },
-      );
+      .text(`INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`, doc.page.width / 4 - 70, yPositionSections + sectionHeight + 10, {
+        align: 'center',
+      });
 
     doc
       .fontSize('7')
