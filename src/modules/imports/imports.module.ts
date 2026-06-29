@@ -18,6 +18,8 @@ import {EnrollmentSubjectsController} from "./controllers/enrollment-subjects.co
 import {CareerTeacherAssignmentsController} from "./controllers/career-teacher-assignments.controller";
 import {CareerTeacherAssignmentsService} from "./services/career-teacher-assignments.service";
 import {MigrationService} from "./services/migration.service";
+import { PlacementTestsController } from './controllers/placement-tests.controller';
+import { PlacementTestsService } from './services/placement-tests.service';
 
 
 @Global()
@@ -31,7 +33,8 @@ import {MigrationService} from "./services/migration.service";
         TeacherDistributionsController,
         EnrollmentSubjectsController,
         CareerTeacherAssignmentsController,
-        MigrationController
+        MigrationController,
+      PlacementTestsController
     ],
     providers: [
         GradesService,
@@ -44,6 +47,7 @@ import {MigrationService} from "./services/migration.service";
         EnrollmentSubjectsService,
         CareerTeacherAssignmentsService,
         MigrationService,
+      PlacementTestsService
     ],
     exports: [],
 })
