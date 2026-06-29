@@ -46,7 +46,7 @@ export class SchoolPeriodsService {
         //All
         const response = await this.repository.find({
             relations,
-            order: {startedAt: 'desc'},
+            order: {code: 'desc'},
         });
 
         return {
