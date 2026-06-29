@@ -129,7 +129,7 @@ export class PlacementTestsService {
     this.partial4 = this.partials.find(partial => partial.code === '4');
   }
 
-  async importEnrollments(file: Express.Multer.File, payload: any) {
+  async importEnrollments(file: Express.Multer.File) {
     this.gradeErrors = [];
     this.attendanceErrors = [];
     this.partialPermissionErrors = [];
@@ -142,7 +142,6 @@ export class PlacementTestsService {
     const sheet = workbookSheets[0];
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
 
-    const teacherDistribution = await this.teacherDistributionRepository.findOneBy({ id: payload.teacherDistributionId });
     const schoolPeriods = await this.schoolPeriodRepository.find();
     const careers = await this.careerRepository.find();
     const subjects = await this.subjectRepository.find({ relations: { academicPeriod: true } });
@@ -171,7 +170,7 @@ export class PlacementTestsService {
     for (const item of dataExcel) {
       this.row++;
       console.log(this.row);
-      console.log(item[ColumnsEnum.IDENTIFICATION]);
+      // console.log(item[ColumnsEnum.IDENTIFICATION]);
 
       const schoolPeriod = schoolPeriods.find(schoolPeriod => schoolPeriod.codeSniese === item[ColumnsEnum.SCHOOL_PERIOD]);
       const career = careers.find(career => career.code === item[ColumnsEnum.CAREER_CODE]);
@@ -205,8 +204,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 7,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 7,
           });
           break;
         }
@@ -223,8 +222,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 7,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 7,
           });
           await this.createEnrollment({
             subjectId: subjectA12.id,
@@ -238,8 +237,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 8,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 8,
           });
           break;
         }
@@ -256,8 +255,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 7,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 7,
           });
           await this.createEnrollment({
             subjectId: subjectA12.id,
@@ -271,8 +270,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 8,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 8,
           });
           await this.createEnrollment({
             subjectId: subjectA21.id,
@@ -286,8 +285,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 9,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 9,
           });
           break;
         }
@@ -304,8 +303,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 7,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 7,
           });
           await this.createEnrollment({
             subjectId: subjectA12.id,
@@ -319,8 +318,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 8,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 8,
           });
           await this.createEnrollment({
             subjectId: subjectA21.id,
@@ -334,8 +333,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 9,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 9,
           });
           await this.createEnrollment({
             subjectId: subjectA22.id,
@@ -349,8 +348,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 10,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 10,
           });
           break;
         }
@@ -367,8 +366,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 7,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 7,
           });
           await this.createEnrollment({
             subjectId: subjectA12.id,
@@ -382,8 +381,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 8,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 8,
           });
           await this.createEnrollment({
             subjectId: subjectA21.id,
@@ -397,8 +396,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 9,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 9,
           });
           await this.createEnrollment({
             subjectId: subjectA22.id,
@@ -412,8 +411,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 10,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 10,
           });
           await this.createEnrollment({
             subjectId: subjectB11.id,
@@ -427,8 +426,8 @@ export class PlacementTestsService {
             studentId: student.id,
             schoolPeriod: schoolPeriod,
             workdayId: workday.id,
-            attendance: 10,
-            finalGrade: 80,
+            attendance: 80,
+            finalGrade: 10,
           });
           break;
         }
@@ -456,12 +455,13 @@ export class PlacementTestsService {
     let enrollment = await this.enrollmentRepository.findOne({
       where: {
         studentId: studentId,
-        schoolPeriodId: schoolPeriod.id,
         careerId: career.id,
+        schoolPeriodId: schoolPeriod.id,
+        enrollmentDetails: { subjectId },
       },
     });
-
     if (!enrollment) {
+      console.log('entro: ', identification);
       enrollment = this.enrollmentRepository.create();
       enrollment.academicPeriodId = academicPeriod.id;
       enrollment.careerId = career.id;
@@ -509,8 +509,11 @@ export class PlacementTestsService {
       await this.saveAttendance(attendance, enrollmentDetail);
 
       await this.saveAcademicState(finalGrade, enrollmentDetail);
+    }else{
+      // console.log('Ya existe: ', identification);
     }
   }
+
   checkErrors(item: any) {
     this.validateGrade(item[ColumnsEnum.GRADE_1], ColumnsEnum.GRADE_1);
     this.validateGrade(item[ColumnsEnum.GRADE_2], ColumnsEnum.GRADE_2);

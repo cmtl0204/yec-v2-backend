@@ -31,7 +31,7 @@ enum ColumnsEnum {
   GRADE_2 = 'Parcial2',
   GRADE_3 = 'Parcial3',
   GRADE_4 = 'Parcial4',
-  ATTENDANCE = 'Progreso',
+  ATTENDANCE = 'Asistencia',
   FINAL_GRADE = 'Nota_Final',
   STATE = 'Estado',
   SCHOOL_PERIOD = 'Periodo',
@@ -449,7 +449,7 @@ export class EnrollmentsService {
   }
 
   async saveAcademicState(item: any, enrollmentDetail: EnrollmentDetailEntity) {
-    if (item[ColumnsEnum.FINAL_GRADE]) enrollmentDetail.finalGrade = item[ColumnsEnum.FINAL_GRADE];
+    if (item[ColumnsEnum.FINAL_GRADE] || item[ColumnsEnum.FINAL_GRADE] == 0) enrollmentDetail.finalGrade = item[ColumnsEnum.FINAL_GRADE];
 
     await this.enrollmentDetailRepository.update(enrollmentDetail.id, enrollmentDetail);
 

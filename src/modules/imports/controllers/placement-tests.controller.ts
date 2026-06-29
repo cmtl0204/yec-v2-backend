@@ -25,8 +25,8 @@ export class PlacementTestsController {
       fileFilter: excelFileFilter,
     }),
   )
-  async importEnrollments(@UploadedFile() file: Express.Multer.File, @Body() payload: any): Promise<ResponseHttpModel> {
-    await this.enrollmentsService.importEnrollments(file, payload);
+  async importEnrollments(@UploadedFile() file: Express.Multer.File): Promise<ResponseHttpModel> {
+    await this.enrollmentsService.importEnrollments(file);
 
     return {
       data: null,
