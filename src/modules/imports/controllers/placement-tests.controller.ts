@@ -57,6 +57,27 @@ export class PlacementTestsController {
       title: `Importado`,
     };
   }
+
+  @ApiOperation({ summary: 'Import Correction Enrollments' })
+  // @Roles(RoleEnum.ADMIN)
+  @Post('corrections')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: join(process.cwd(), 'storage/imports'),
+        filename: getFileName,
+      }),
+      fileFilter: excelFileFilter,
+    }),
+  )
+  async importCorrectionEnrollments(@UploadedFile() file: Express.Multer.File): Promise<ResponseHttpModel> {
+    await this.enrollmentsService.importCorrectionEnrollments(file);
+
+    return {
+      data: null,
+      message: `Matriculas Importadas Correctamente`,
+      title: `Importado`,
+    };
+  }
 }
-
-

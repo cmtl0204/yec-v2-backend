@@ -437,6 +437,51 @@ export class PlacementTestsService {
     fs.unlinkSync(join(process.cwd(), 'storage/imports', file.filename));
   }
 
+  async importCorrectionEnrollments(file: Express.Multer.File) {
+    this.row = 1;
+
+    const path = join(process.cwd(), 'storage/imports', file.filename);
+
+    const workbook = XLSX.readFile(path);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+    for (const item of dataExcel) {
+      this.row++;
+      console.log(this.row);
+
+      const enrollments = await this.enrollmentRepository.find({
+        where: { studentId: item['student_id'], schoolPeriodId: item['school_period_id'] },
+        relations: { enrollmentDetails: true },
+        order: { createdAt: 'desc' },
+      });
+
+      let i = 0;
+      let enrollmentId = null;
+      for (const enrollment of enrollments) {
+        if (i === 0) {
+          enrollmentId = enrollment.id;
+        }
+
+        if (i > 0) {
+          let enrollmentIdTemp = null;
+
+          for (const ed of enrollment.enrollmentDetails) {
+            enrollmentIdTemp = ed.enrollmentId;
+            ed.enrollmentId = enrollmentId;
+            await this.enrollmentDetailRepository.save(ed);
+          }
+
+          await this.enrollmentRepository.delete(enrollmentIdTemp);
+        }
+        i++;
+      }
+    }
+
+    fs.unlinkSync(join(process.cwd(), 'storage/imports', file.filename));
+  }
+
   async createEnrollment({
     schoolPeriod,
     career,
@@ -509,7 +554,7 @@ export class PlacementTestsService {
       await this.saveAttendance(attendance, enrollmentDetail);
 
       await this.saveAcademicState(finalGrade, enrollmentDetail);
-    }else{
+    } else {
       // console.log('Ya existe: ', identification);
     }
   }
