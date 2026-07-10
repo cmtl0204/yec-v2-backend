@@ -155,23 +155,24 @@ export class EnrollmentSqlService {
 
     async findEnrollmentDetailsBySchoolPeriod(schoolPeriodId: string): Promise<any[]> {
         const queryBuilder: SelectQueryBuilder<EnrollmentEntity> = this.repository.createQueryBuilder('enrollments');
-        queryBuilder.select(
-            [
-                'careers.code as "Código Carrera"',
-                'careers.name as "Carrera"',
-                'users.identification as "Número de Documento"',
-                'users.lastname as "Apellidos"',
-                'users.name as "Nombres"',
-                'users.email as "Correo Electrónico"',
-                'parallels.name as "Paralelo"',
-                'types.name as "Tipo de Matrícula"',
-                'subjects.code as "Código de Asignatura"',
-                'subjects.name as "Asignutura"',
-                'enrollment_details.number as "Número de Matrícula"',
-                'academic_state.name as "Estado Asignatura"',
-                'detail_states.name as "Estado Matrícula"',
-                'enrollment_details.observation as "Observación"'
-            ])
+        queryBuilder
+          .select([
+            'careers.code as "Código Carrera"',
+            'careers.name as "Carrera"',
+            'users.identification as "Número de Documento"',
+            'users.lastname as "Apellidos"',
+            'users.name as "Nombres"',
+            'users.email as "Correo Electrónico"',
+            'types.name as "Tipo de Matrícula"',
+            'subjects.code as "Código de Asignatura"',
+            'subjects.name as "Asignutura"',
+            'parallels.name as "Paralelo"',
+            'workdays.name as "Horario"',
+            'enrollment_details.number as "Número de Matrícula"',
+            'academic_state.name as "Estado Asignatura"',
+            'detail_states.name as "Estado Matrícula"',
+            'enrollment_details.observation as "Observación"',
+          ])
           .innerJoin(EnrollmentStateEntity, 'enrollment_states', 'enrollment_states.enrollment_id = enrollments.id')
           .innerJoin(CatalogueEntity, 'types', 'types.id = enrollments.type_id')
           .innerJoin(CatalogueEntity, 'states', 'states.id = enrollment_states.state_id')
@@ -185,21 +186,26 @@ export class EnrollmentSqlService {
           .leftJoin(CatalogueEntity, 'academic_state', 'academic_state.id = enrollment_details.academic_state_id')
           .innerJoin(SubjectEntity, 'subjects', 'subjects.id = enrollment_details.subject_id')
           .innerJoin(CatalogueEntity, 'parallels', 'parallels.id = enrollment_details.parallel_id')
+          .innerJoin(CatalogueEntity, 'workdays', 'workdays.id = enrollment_details.workday_id')
 
-            .where(
-                `enrollments.school_period_id = :schoolPeriodId 
+          .where(
+            `enrollments.school_period_id = :schoolPeriodId 
                 AND enrollment_states.deleted_at is null 
                 AND enrollment_detail_states.deleted_at is null 
                 AND enrollments.deleted_at IS NULL 
-                AND detail_states.code IN (:...stateCodes)`, {
-                    schoolPeriodId, stateCodes: ['approved', 'enrolled']
-                })
-            .orderBy(
-                `careers.name, 
+                AND detail_states.code IN (:...stateCodes)`,
+            {
+              schoolPeriodId,
+              stateCodes: ['approved', 'enrolled'],
+            },
+          )
+          .orderBy(
+            `careers.name, 
                 academic_periods.code, 
                 parallels.code, 
                 users.lastname, 
-                users.name`);
+                users.name`,
+          );
 
         return await queryBuilder.getRawMany();
     }
