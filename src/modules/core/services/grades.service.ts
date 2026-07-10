@@ -353,8 +353,6 @@ export class GradesService {
   async loadPartialPermissions(teacherDistributionId: string) {
     const partialPermissions = await this.partialPermissionRepository.find({ where: { teacherDistributionId } });
 
-    console.log(teacherDistributionId);
-    console.log(partialPermissions);
     for (const partialPermission of partialPermissions) {
       if (partialPermission.partialId === this.partial1.id) {
         this.partialEnabled1 = partialPermission.enabled;
