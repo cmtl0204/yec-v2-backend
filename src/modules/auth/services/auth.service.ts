@@ -7,14 +7,7 @@ import { add, isBefore } from 'date-fns';
 import { UserEntity, TransactionalCodeEntity } from '@auth/entities';
 import { PayloadTokenModel } from '@auth/models';
 import { AuthRepositoryEnum, MailSubjectEnum, MailTemplateEnum } from '@shared/enums';
-import {
-  LoginDto,
-  PasswordChangeDto,
-  ReadProfileDto,
-  ReadUserInformationDto,
-  UpdateProfileDto,
-  UpdateUserInformationDto,
-} from '@auth/dto';
+import { LoginDto, PasswordChangeDto, ReadProfileDto, ReadUserInformationDto, UpdateProfileDto, UpdateUserInformationDto } from '@auth/dto';
 import { ServiceResponseHttpModel } from '@shared/models';
 import { MailService } from '@common/services';
 import { join } from 'path';
@@ -37,8 +30,7 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly nodemailerService: MailService,
     private readonly schoolPeriodsService: SchoolPeriodsService,
-  ) {
-  }
+  ) {}
 
   async changePassword(id: string, payload: PasswordChangeDto): Promise<boolean> {
     const user = await this.repository.findOne({
@@ -75,7 +67,7 @@ export class AuthService {
   }
 
   async login(payload: LoginDto): Promise<ServiceResponseHttpModel> {
-    const user: UserEntity = (await this.repository.findOne({
+    const user: UserEntity = await this.repository.findOne({
       select: {
         id: true,
         identification: true,
@@ -96,16 +88,17 @@ export class AuthService {
         teacher: { careerToTeachers: { career: true } },
         student: { careers: true },
       },
-    }));
+    });
 
     if (!user) {
       throw new UnauthorizedException(`Usuario y/o contraseña no válidos`);
     }
 
-    if (user?.suspendedAt) throw new UnauthorizedException({
-      error: 'Cuenta Suspendida',
-      message: 'Su usuario se encuentra suspendido',
-    });
+    if (user?.suspendedAt)
+      throw new UnauthorizedException({
+        error: 'Cuenta Suspendida',
+        message: 'Su usuario se encuentra suspendido',
+      });
 
     if (user?.maxAttempts === 0) throw new UnauthorizedException('Ha excedido el número máximo de intentos permitidos');
 
@@ -271,7 +264,8 @@ export class AuthService {
     }
 
     const maxDate = add(transactionalCode.createdAt, { minutes: 10 });
-
+    console.log('transactionalCode.createdAt', transactionalCode.createdAt);
+    console.log('maxDate', maxDate);
     if (isBefore(maxDate, new Date())) {
       throw new BadRequestException({
         message: 'El código ha expirado',
@@ -302,12 +296,11 @@ export class AuthService {
     // user.password = payload.passwordNew;
     // user.passwordChanged = true;
 
-    await this.repository.update(user.id,
-      {
-        maxAttempts: this.MAX_ATTEMPTS,
-        password: Bcrypt.hashSync(payload.passwordNew, 10),
-        passwordChanged: true,
-      });
+    await this.repository.update(user.id, {
+      maxAttempts: this.MAX_ATTEMPTS,
+      password: Bcrypt.hashSync(payload.passwordNew, 10),
+      passwordChanged: true,
+    });
 
     return { data: true };
   }
@@ -365,9 +358,7 @@ export class AuthService {
   async generatePDF() {
     const pdf: Buffer = await new Promise(resolve => {
       // const doc = new PDFDocument();
-
       // doc.text('hello world', 100, 50);
-
       // const buffer = [];
       // doc.on('data', buffer.push.bind(buffer));
       // doc.on('end', () => resolve(Buffer.concat(buffer)));
@@ -385,6 +376,5 @@ export class AuthService {
     };
 
     return await this.nodemailerService.sendMail(mailData);
-
   }
 }
