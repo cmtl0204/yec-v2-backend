@@ -32,7 +32,6 @@ export class SchoolPeriodSeeder {
             const state = catalogues.find((catalogue: CatalogueEntity) => catalogue.code === item['state'] && catalogue.type === CatalogueTypeEnum.SCHOOL_PERIODS_STATE);
 
             const schoolPeriod: SeedSchoolPeriodDto = {
-                institution: institution,
                 code: item['code'],
                 codeSniese: item['code'],
                 isVisible: true,

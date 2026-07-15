@@ -4,9 +4,6 @@ import { isBooleanValidationOptions, isDateValidationOptions, isNotEmptyValidati
 
 export class SchoolPeriodDto {
   @IsNotEmpty(isNotEmptyValidationOptions())
-  readonly institution: InstitutionEntity;
-
-  @IsNotEmpty(isNotEmptyValidationOptions())
   readonly state: CatalogueEntity;
 
   @IsNotEmpty(isNotEmptyValidationOptions())

@@ -502,11 +502,10 @@ export class PlacementTestsService {
         studentId: studentId,
         careerId: career.id,
         schoolPeriodId: schoolPeriod.id,
-        enrollmentDetails: { subjectId },
       },
     });
+
     if (!enrollment) {
-      console.log('entro: ', identification);
       enrollment = this.enrollmentRepository.create();
       enrollment.academicPeriodId = academicPeriod.id;
       enrollment.careerId = career.id;
@@ -538,6 +537,7 @@ export class PlacementTestsService {
       enrollmentDetail.typeId = enrollmentTypeId;
       enrollmentDetail.workdayId = workdayId;
       enrollmentDetail.number = 1;
+      enrollmentDetail.observation = 'Prueba de Ubicación';
       enrollmentDetail.date = new Date();
 
       enrollmentDetail = await this.enrollmentDetailRepository.save(enrollmentDetail);
@@ -556,6 +556,30 @@ export class PlacementTestsService {
       await this.saveAcademicState(finalGrade, enrollmentDetail);
     } else {
       // console.log('Ya existe: ', identification);
+      let enrollmentDetail = this.enrollmentDetailRepository.create();
+      enrollmentDetail.enrollmentId = enrollment.id;
+      enrollmentDetail.parallelId = parallelId;
+      enrollmentDetail.subjectId = subjectId;
+      enrollmentDetail.typeId = enrollmentTypeId;
+      enrollmentDetail.workdayId = workdayId;
+      enrollmentDetail.number = 1;
+      enrollmentDetail.observation = 'Prueba de Ubicación';
+      enrollmentDetail.date = new Date();
+
+      enrollmentDetail = await this.enrollmentDetailRepository.save(enrollmentDetail);
+
+      const enrollmentDetailState = {
+        enrollmentDetailId: enrollmentDetail.id,
+        stateId: enrollmentStateEnrolledId,
+        userId: userId,
+        date: new Date(),
+      };
+
+      await this.enrollmentDetailStateRepository.save(enrollmentDetailState);
+
+      await this.saveAttendance(attendance, enrollmentDetail);
+
+      await this.saveAcademicState(finalGrade, enrollmentDetail);
     }
   }
 
