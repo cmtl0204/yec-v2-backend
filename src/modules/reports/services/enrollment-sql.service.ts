@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
 import {
   CareerEntity,
   CatalogueEntity,
@@ -155,6 +155,7 @@ export class EnrollmentSqlService {
         studentId,
         careerId,
         enrollmentState: { stateId: enrolled.id },
+        enrollmentDetails: { academicStateId: Not(IsNull()) },
       },
       order: { enrollmentDetails: { subject: { academicPeriod: { code: 'DESC' } } } },
     });
