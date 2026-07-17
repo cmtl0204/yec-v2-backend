@@ -44,3 +44,5 @@ lerna-debug.log*
 /storage/reports/
 /storage/imports/
 /assets/
+
+log-registration.txt
