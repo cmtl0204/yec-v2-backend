@@ -176,7 +176,6 @@ export class EnrollmentReportsService {
     const fechaCompleta = `${formattedDate.replace('dd', day)}`;
     //Inicio del Documento
 
-
     doc.moveDown();
     doc.font('Times-Roman');
     doc.fontSize(11);
@@ -287,47 +286,35 @@ export class EnrollmentReportsService {
       align: 'center',
     });
 
-    doc.image(this.imageHeaderPath, 35, 20, {
-      align: 'center',
-      width: this.imageHeaderWidth,
-      height: this.imageHeaderHeight,
+    const textX = 50;
+    const textY = 80;
+    const textW = 500;
+
+    // Tamaño de la página
+    const width = doc.page.width;
+    const height = doc.page.height;
+
+    doc.image(this.background, 0, 0, {
+      width: width,
+      height: height,
     });
 
-    doc.moveDown('2');
+    doc.image(this.imageHeaderPath, (doc.page.width - 50) / 2, 135, {
+      width: 50,
+      height: 50,
+    });
 
     doc.pipe(res);
-    const title = `INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`;
+
     const career = `${careers.name}`;
-    doc.fontSize('12').font('Helvetica-Bold').text(title, {
+
+    doc.moveDown('3');
+
+    doc.font('Times-Roman').fontSize('18').text(career, {
       align: 'center',
     });
 
-    doc.moveDown();
-
-    doc.font('Times-Roman').fontSize('9').text(career, {
-      align: 'center',
-    });
-
-    doc.moveDown();
-
-    doc.font('Times-Roman').fontSize('8').text(careers.codeSniese, {
-      align: 'center',
-    });
-
-    doc.moveDown();
-
-    doc
-      .font('Times-Roman')
-      .fontSize('9')
-      .text(
-        `PROGRAMA DE RECONOCIMIENTO DE TRAYECTORIAS DE LOS CONOCIMIENTOS Y EXPERIENCIAS DE LAS SABIAS Y SABIOS 
-    `,
-        {
-          align: 'center',
-        },
-      );
-
-    doc.moveDown();
+    doc.moveDown('3');
 
     doc.font('Helvetica-Bold').fontSize('20').text(`RÉCORD ACADÉMICO`, {
       align: 'center',
@@ -336,33 +323,17 @@ export class EnrollmentReportsService {
     doc.moveDown();
 
     doc
-      .font('Times-Bold')
-      .fontSize('10')
-      .text(`Nombre: `, {
-        continued: true,
-      })
       .font('Times-Roman')
-      .text(`${student.user.name} ${student.user.lastname}`);
-
-    doc
-      .font('Times-Bold')
-      .fontSize('10')
-      .text(`Cédula: `, {
-        continued: true,
-      })
-      .font('Times-Roman')
-      .text(student.user.identification);
+      .fontSize('12')
+      .text(
+        `El ${career} certifica que ${student.user.name} ${student.user.lastname}, con cédula de ciudadanía ${student.user.identification}, ha obtenido las siguientes calificaciones durante su permanencia en este centro: `,
+        {
+          align: 'justify',
+        },
+      );
 
     const currentDate = new Date();
-    const formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
-    doc
-      .font('Times-Bold')
-      .fontSize('10')
-      .text(`Fecha: `, {
-        continued: true,
-      })
-      .font('Times-Roman')
-      .text(formattedDate);
+    let formattedDate = format(currentDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
 
     const finalGrade = [];
 
@@ -373,78 +344,77 @@ export class EnrollmentReportsService {
       });
     });
 
-    doc
-      .font('Times-Bold')
-      .fontSize('10')
-      .text(`Promedio: `, {
-        continued: true,
-      })
-      .font('Times-Roman')
-      .text(finalGrade[0]);
-
     doc.moveDown('2');
 
     const rows = [];
 
     enrollments.forEach(enrollment => {
       enrollment.enrollmentDetails.forEach(enrollmentDetail => {
-        const list = [
-          enrollment.schoolPeriod.shortName,
-          enrollmentDetail.subject.code,
-          enrollmentDetail.subject.name,
-          enrollmentDetail.subject.academicPeriod.name,
-          enrollmentDetail.number,
-          enrollmentDetail.grades,
-          enrollmentDetail.enrollmentDetailState.state.name,
-        ];
+        const state =
+          enrollmentDetail.observation != null
+            ? `${enrollmentDetail.academicState?.name}\n${enrollmentDetail.observation}`
+            : enrollmentDetail.academicState?.name;
+
+        const list = [enrollmentDetail.subject.name, enrollment.schoolPeriod.shortName, enrollmentDetail.finalGrade, enrollmentDetail.finalAttendance, state];
         rows.push(list);
       });
     });
 
     const table = {
-      headers: ['PAO', 'Código Asignatura', 'Asignatura', 'Nivel', 'Num. Matrícula', 'Calificación', 'Estado'],
+      headers: ['Nivel', 'Periodo', 'Promedio', 'Asistencia', 'Estado'],
       rows: rows,
     };
 
-    await doc.table(table, { align: 'center', columnsSize: [40, 60, 160, 50, 50, 50, 50] });
+    await doc.table(table, { align: 'center', columnsSize: [80, 100, 80, 80, 100] });
+
+    doc.moveDown();
+    doc.x = doc.page.margins.left;
+
+    doc.font('Times-Roman').fontSize('12').text(`Es todo cuanto se puede informar.`, {
+      align: 'left',
+      continue: true,
+    });
 
     doc.moveDown();
 
-    const oldBottomMargin = doc.page.margins.bottom;
-    doc.page.margins.bottom = 0;
+    doc.font('Times-Roman').fontSize('12').text(`Quito, ${formattedDate}`, {
+      align: 'left',
+    });
 
-    const sectionWidth = doc.page.width / 2 - 50;
-    const sectionHeight = 20;
+    const pageWidth = doc.page.width;
+    const margin = 50;
+    const textWidth = pageWidth - margin * 2;
 
-    const yPositionSections = doc.page.height - oldBottomMargin / 2 - 100;
+    // Posición cerca del final de la hoja
+    const y = doc.page.height - 150;
 
-    doc.font('Times-Bold').fontSize('12').text('DIRECCIÓN DE CARRERA', 50, yPositionSections, { width: sectionWidth, align: 'center' });
-
-    doc
-      .font('Times-Bold')
-      .fontSize('12')
-      .text(
-        'SECRETARIA DE CARRERA',
-        doc.page.width / 2 + 50,
-        yPositionSections,
-        { width: sectionWidth, align: 'left' }, // Modificado para centrar
-      );
+    doc.font('Times-Roman').fontSize(12).text('MSc. Lorena Maldonado Moreno', margin, y, {
+      width: textWidth,
+      align: 'center',
+    });
 
     doc
-      .font('Times-Bold')
-      .fontSize('12')
-      .text(`INSTITUTO SUPERIOR TECNOLÓGICO DE TURISMO Y PATRIMONIO YAVIRAC`, doc.page.width / 4 - 70, yPositionSections + sectionHeight + 10, {
+      .font('Helvetica-Bold')
+      .fontSize(12)
+      .text('COORDINADORA YAVIRAC ENGLISH CENTER', margin, y + 20, {
+        width: textWidth,
         align: 'center',
       });
 
+    doc.font('Times-Roman').fontSize('8').text(`Información tomada de los repositorios digitales emitidos por los docentes del YEC`, {
+      align: 'center',
+    });
+
+
+    formattedDate = format(currentDate, "yyyy-MM-dd HH:mm:ss", { locale: es });
+
     doc
-      .fontSize('7')
-      .text(
-        `Dir. García Moreno S4-35 y Ambato, TELF: +593 99 550 6245 MAIL: yavirac@yavirac.edu.ec Instituto Superior Tecnológico de Turismo y Patrimonio Yavirac`,
-        80,
-        doc.page.height - oldBottomMargin / 2 - 40,
-        { align: 'center' },
-      );
+      .font('Helvetica-Bold')
+      .fontSize(8)
+      .text(`Generado por el sistema SISYEC el ${formattedDate}`, margin, y + 65, {
+        width: textWidth,
+        align: 'right',
+      });
 
     doc.end();
   }

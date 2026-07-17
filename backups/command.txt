@@ -1,6 +1,6 @@
 docker exec -i pg18 pg_restore \
   -U postgres \
-  -d yec_prod1 \
+  -d yec_prod \
   --clean \
   --if-exists \
-  < backup_prod_yec_v2_2026_07_02_2.backup
+  < backup_prod_yec_v2_2026_07_14_2.backup

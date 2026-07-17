@@ -224,7 +224,7 @@ export class EnrollmentsService {
       where.push(
         {
           //careerId,
-          schoolPeriodId: params.schoolPeriodId,
+          // schoolPeriodId: params.schoolPeriodId,
           student: {
             user: {
               identification: ILike(`%${search}%`),
@@ -233,7 +233,7 @@ export class EnrollmentsService {
         },
         {
           //careerId,
-          schoolPeriodId: params.schoolPeriodId,
+          // schoolPeriodId: params.schoolPeriodId,
           student: {
             user: {
               name: ILike(`%${search}%`),
@@ -242,7 +242,7 @@ export class EnrollmentsService {
         },
         {
           //careerId,
-          schoolPeriodId: params.schoolPeriodId,
+          // schoolPeriodId: params.schoolPeriodId,
           student: {
             user: {
               lastname: ILike(`%${search}%`),
@@ -304,6 +304,7 @@ export class EnrollmentsService {
     const response = await this.repository.findAndCount({
       relations: {
         career: true,
+        schoolPeriod: true,
         academicPeriod: true,
         parallel: true,
         enrollmentStates: { state: true },
