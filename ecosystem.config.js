@@ -5,7 +5,7 @@ module.exports = {
       script: 'dist/main.js',
       // Cluster usa todos los cores (bueno para APIs sin estado)
       exec_mode: 'cluster',
-      instances: 'max',
+      instances: '2',
       // Puerto por env (Nest lee process.env.PORT)
       env: {
         NODE_ENV: 'production',
